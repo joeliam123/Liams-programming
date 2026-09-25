@@ -46,6 +46,83 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
+<style>
+.calc-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 8px 0 14px 0;
+}
+
+.calc-display {
+    background: #151515;
+    color: white;
+    border-radius: 22px;
+    padding: 22px 18px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    overflow: hidden;
+    margin: 0 auto 14px auto;
+    max-width: 430px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+}
+
+.calc-expression {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 18px;
+    color: #a7a7a7;
+    min-height: 24px;
+    overflow-wrap: anywhere;
+}
+
+.calc-result {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(38px, 10vw, 58px);
+    font-weight: 300;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .block-container {
+        padding: 1rem .7rem 2rem .7rem;
+    }
+
+    .calc-title {
+        font-size: 25px;
+    }
+
+    .calc-display {
+        border-radius: 20px;
+        padding: 18px 15px;
+        margin-bottom: 10px;
+    }
+
+    div[data-testid="column"] {
+        padding: 3px !important;
+    }
+
+    div[data-testid="column"] button {
+        min-height: 58px !important;
+        height: 58px !important;
+        border-radius: 50% !important;
+        font-size: 23px !important;
+        padding: 0 !important;
+    }
+}
+
+@media (min-width: 601px) {
+    .calc-display {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+</style>
+
+
 
 # ==========================================
 # PROFILE
@@ -107,7 +184,7 @@ if st.button("✨ Create My Profile", key="profile"):
 
 st.divider()
 
-st.header("🧮 Calculator")
+st.markdown('<div class="calc-title">🧮 Calculator</div>', unsafe_allow_html=True)
 
 if "display" not in st.session_state:
     st.session_state.display = "0"
@@ -250,19 +327,9 @@ def press_clear():
 
 st.markdown(
     f"""
-    <div style="
-        background-color: #1e1e1e;
-        color: white;
-        padding: 20px;
-        border-radius: 12px;
-        text-align: right;
-        font-size: 40px;
-        font-family: monospace;
-        margin-bottom: 15px;
-        min-height: 50px;
-        overflow-wrap: anywhere;
-    ">
-        {st.session_state.expression}
+    <div class="calc-display">
+        <div class="calc-expression">{st.session_state.expression}</div>
+        <div class="calc-result">{st.session_state.display}</div>
     </div>
     """,
     unsafe_allow_html=True
@@ -734,3 +801,4 @@ if st.button(
     st.session_state.quiz_started = False
     st.session_state.quiz_submitted = False
     st.rerun()
+
