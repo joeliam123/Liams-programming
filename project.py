@@ -188,6 +188,65 @@ h1, h2, h3, h4, h5, h6 {
     color: white !important;
 }
 
+
+body, p, label, .stMarkdown, .stText, .stCaption,
+[data-testid="stWidgetLabel"] {
+    color: white !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: white !important;
+}
+
+[data-testid="stButton"] button,
+[data-testid="stButton"] button p {
+    color: white !important;
+}
+
+[data-testid="stHorizontalBlock"] {
+    flex-wrap: nowrap !important;
+    gap: 7px !important;
+}
+
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+    min-width: 0 !important;
+    flex: 1 1 0 !important;
+}
+
+.calc-button-wrap button {
+    min-height: 58px !important;
+    height: 58px !important;
+    border-radius: 50% !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    background: rgba(255,255,255,0.16) !important;
+    border: 1px solid rgba(255,255,255,0.30) !important;
+}
+
+.calc-button-wrap button p {
+    color: white !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+@media (max-width: 640px) {
+    [data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+    }
+
+    .calc-button-wrap button {
+        min-height: 52px !important;
+        height: 52px !important;
+        font-size: 19px !important;
+    }
+
+    .calc-button-wrap button p {
+        font-size: 19px !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -349,39 +408,46 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="calculator-grid">', unsafe_allow_html=True)
+def calc_button(label, key, action, column):
+    with column:
+        st.markdown('<div class="calc-button-wrap">', unsafe_allow_html=True)
+        if st.button(label, key=key, use_container_width=True):
+            action()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-buttons = [
-    ("7", "seven", "number"),
-    ("8", "eight", "number"),
-    ("9", "nine", "number"),
-    ("÷", "divide", "operator"),
-    ("4", "four", "number"),
-    ("5", "five", "number"),
-    ("6", "six", "number"),
-    ("×", "multiply", "operator"),
-    ("1", "one", "number"),
-    ("2", "two", "number"),
-    ("3", "three", "number"),
-    ("-", "minus", "operator"),
-    ("0", "zero", "number"),
-    ("C", "clear", "clear"),
-    ("=", "equals", "equals"),
-    ("+", "plus", "operator")
+
+calculator_rows = [
+    [
+        ("7", "seven", lambda: press_number(7)),
+        ("8", "eight", lambda: press_number(8)),
+        ("9", "nine", lambda: press_number(9)),
+        ("÷", "divide", lambda: press_operator("÷"))
+    ],
+    [
+        ("4", "four", lambda: press_number(4)),
+        ("5", "five", lambda: press_number(5)),
+        ("6", "six", lambda: press_number(6)),
+        ("×", "multiply", lambda: press_operator("×"))
+    ],
+    [
+        ("1", "one", lambda: press_number(1)),
+        ("2", "two", lambda: press_number(2)),
+        ("3", "three", lambda: press_number(3)),
+        ("-", "minus", lambda: press_operator("-"))
+    ],
+    [
+        ("0", "zero", lambda: press_number(0)),
+        ("C", "clear", press_clear),
+        ("=", "equals", press_equals),
+        ("+", "plus", lambda: press_operator("+"))
+    ]
 ]
 
-for label, key, button_type in buttons:
-    if st.button(label, key=key, use_container_width=True):
-        if button_type == "number":
-            press_number(int(label))
-        elif button_type == "operator":
-            press_operator(label)
-        elif button_type == "clear":
-            press_clear()
-        elif button_type == "equals":
-            press_equals()
+for row in calculator_rows:
+    columns = st.columns(4, gap="small")
+    for index, (label, key, action) in enumerate(row):
+        calc_button(label, key, action, columns[index])
 
-st.markdown('</div>', unsafe_allow_html=True)
 
 st.divider()
 
@@ -635,4 +701,3 @@ if st.button(
     st.session_state.quiz_started = False
     st.session_state.quiz_submitted = False
     st.rerun()
-
