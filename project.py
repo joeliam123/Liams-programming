@@ -213,29 +213,33 @@ h1, h2, h3, h4, h5, h6 {
     flex: 1 1 0 !important;
 }
 
+
 .calc-button-wrap button {
     min-height: 58px !important;
     height: 58px !important;
     border-radius: 50% !important;
     font-size: 22px !important;
     font-weight: 700 !important;
-    color: white !important;
-    background: rgba(255,255,255,0.16) !important;
-    border: 1px solid rgba(255,255,255,0.30) !important;
+    background: rgba(35, 35, 50, 0.95) !important;
+    border: 1px solid rgba(255,255,255,0.35) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+.calc-button-wrap button div {
+    color: #ffffff !important;
 }
 
 .calc-button-wrap button p {
-    color: white !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
     font-size: 22px !important;
     font-weight: 700 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 @media (max-width: 640px) {
-    [data-testid="stHorizontalBlock"] {
-        flex-wrap: nowrap !important;
-        gap: 4px !important;
-    }
-
     .calc-button-wrap button {
         min-height: 52px !important;
         height: 52px !important;
@@ -245,6 +249,27 @@ h1, h2, h3, h4, h5, h6 {
     .calc-button-wrap button p {
         font-size: 19px !important;
     }
+}
+.calc-button-wrap button {
+        min-height: 52px !important;
+        height: 52px !important;
+        font-size: 19px !important;
+    }
+
+    .calc-button-wrap button p {
+        font-size: 19px !important;
+    }
+}
+
+
+.calc-button-wrap [data-testid="stButton"] button,
+.calc-button-wrap [data-testid="stButton"] button *,
+.calc-button-wrap [data-testid="stButton"] button p,
+.calc-button-wrap [data-testid="stButton"] button div {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 </style>
@@ -701,3 +726,4 @@ if st.button(
     st.session_state.quiz_started = False
     st.session_state.quiz_submitted = False
     st.rerun()
+
