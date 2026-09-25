@@ -334,7 +334,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("7", key="seven", use_container_width=True):
@@ -351,7 +353,9 @@ with col4:
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("4", key="four", use_container_width=True):
@@ -368,7 +372,9 @@ with col4:
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("1", key="one", use_container_width=True):
@@ -385,7 +391,9 @@ with col4:
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("0", key="zero", use_container_width=True):
