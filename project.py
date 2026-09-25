@@ -451,102 +451,45 @@ for row in calculator_rows:
 st.divider()
 
 st.header("📊 Grade Calculator")
-st.write("Enter your grades for each subject.")
 
-if "subjects" not in st.session_state:
-    st.session_state.subjects = ["Math", "English", "Science"]
+subject_count = st.number_input("📚 How many subjects?", min_value=1, max_value=20, value=3, step=1, key="subject_count")
+st.write(f"Enter your grades for {subject_count} subject(s):")
 
-st.subheader("➕ Add More Subjects")
-
-new_subject = st.text_input(
-    "Subject name",
-    placeholder="Example: History",
-    key="new_subject"
-)
-
-if st.button("Add Subject", key="add_subject"):
-    if new_subject.strip():
-        if new_subject.strip() not in st.session_state.subjects:
-            st.session_state.subjects.append(new_subject.strip())
-            st.rerun()
-        else:
-            st.warning("⚠️ That subject already exists!")
-    else:
-        st.warning("⚠️ Please enter a subject name.")
-
-st.subheader("📝 Enter Your Grades")
-
-grades = {}
-
-for sub in st.session_state.subjects:
-    grades[sub] = st.number_input(
-        f"📚 {sub}",
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=1.0,
-        key=f"grade_{sub}"
-    )
-
-if st.button(
-    "🧮 Calculate Grades",
-    key="calculate_grades",
-    use_container_width=True
-):
-    average = sum(grades.values()) / len(grades)
-
-    if average >= 90:
-        letter = "A"
-        gpa = 4.0
-        comment = "Excellent! Outstanding performance! 🌟"
-    elif average >= 80:
-        letter = "B"
-        gpa = 3.0
-        comment = "Great job! You are doing very well! 👏"
-    elif average >= 70:
-        letter = "C"
-        gpa = 2.0
-        comment = "Good work! Keep practicing to improve! 👍"
-    elif average >= 60:
-        letter = "D"
-        gpa = 1.0
-        comment = "You passed, but there is room for improvement. 📚"
-    else:
-        letter = "F"
-        gpa = 0.0
-        comment = "Keep trying! Study more and you can improve. 💪"
-
-    st.success("✅ Grades calculated successfully!")
-    st.subheader("📈 Your Results")
-
-    col1, col2, col3 = st.columns(3)
-
+subjects = []
+for i in range(int(subject_count)):
+    col1, col2 = st.columns([2, 1])
     with col1:
-        st.metric("Average", f"{average:.2f}%")
+        subject_name = st.text_input(f"Subject {i + 1}", value=f"Subject {i + 1}", key=f"grade_subject_{i}")
     with col2:
-        st.metric("GPA", f"{gpa:.1f}")
-    with col3:
-        st.metric("Letter Grade", letter)
+        grade = st.number_input(f"Grade {i + 1}", min_value=0, max_value=100, value=0, step=1, key=f"grade_value_{i}")
+    subjects.append((subject_name, grade))
 
-    st.info(f"💬 **Remark:** {comment}")
-
-    st.subheader("📋 Subject Breakdown")
-
-    for sub, grade in grades.items():
-        if grade >= 90:
-            subject_letter = "A"
-        elif grade >= 80:
-            subject_letter = "B"
-        elif grade >= 70:
-            subject_letter = "C"
-        elif grade >= 60:
-            subject_letter = "D"
-        else:
-            subject_letter = "F"
-
-        st.write(f"**{sub}:** {grade:.1f}% — {subject_letter}")
-
-st.divider()
+if st.button("🧮 Calculate Grades", key="calculate_grades"):
+    grades = [grade for _, grade in subjects]
+    average = sum(grades) / len(grades)
+    if average >= 90:
+        letter, gpa, remark = "A", 4.0, "Excellent! Keep up the great work! 🌟"
+    elif average >= 80:
+        letter, gpa, remark = "B", 3.0, "Very good work! Keep improving! 👍"
+    elif average >= 70:
+        letter, gpa, remark = "C", 2.0, "Good effort! There is room to improve. 📚"
+    elif average >= 60:
+        letter, gpa, remark = "D", 1.0, "You passed, but keep working harder. 💪"
+    else:
+        letter, gpa, remark = "F", 0.0, "Keep practicing and don't give up! 🔥"
+    st.success("Grades calculated successfully!")
+    st.metric("Average", f"{average:.2f}%")
+    st.metric("Letter Grade", letter)
+    st.metric("GPA", f"{gpa:.1f}")
+    st.info(f"💬 Remark: {remark}")
+    st.subheader("📋 Subject Results")
+    for subject_name, grade in subjects:
+        if grade >= 90: subject_letter = "A"
+        elif grade >= 80: subject_letter = "B"
+        elif grade >= 70: subject_letter = "C"
+        elif grade >= 60: subject_letter = "D"
+        else: subject_letter = "F"
+        st.write(f"**{subject_name}** — {grade:.0f}% ({subject_letter})")
 
 st.header("🧠 Quiz Master")
 
