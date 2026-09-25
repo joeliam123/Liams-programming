@@ -65,6 +65,7 @@ st.markdown("""
     padding-top: 2rem;
     position: relative;
     z-index: 1;
+    color: white;
 }
 
 h1, h2, h3 {
@@ -117,29 +118,33 @@ h1, h2, h3 {
     text-align: right;
 }
 
-.calc-row {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+.calculator-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 8px !important;
-    width: 100% !important;
+    width: min(430px, 100%) !important;
+    margin: 0 auto !important;
 }
 
-.calc-row > div {
-    flex: 1 1 0 !important;
+.calculator-grid > div {
     min-width: 0 !important;
-    width: 25% !important;
+    width: 100% !important;
 }
 
-.calc-row button {
+.calculator-grid button {
     width: 100% !important;
+    min-height: 62px !important;
+    height: 62px !important;
+    border-radius: 50% !important;
+    font-size: 23px !important;
+    padding: 0 !important;
     transition:
         transform 0.15s ease,
         box-shadow 0.15s ease,
         filter 0.15s ease !important;
 }
 
-.calc-row button:hover {
+.calculator-grid button:hover {
     transform: translateY(-3px) scale(1.04);
     filter: brightness(1.18);
     box-shadow: 0 8px 20px rgba(0,0,0,0.25);
@@ -161,18 +166,28 @@ h1, h2, h3 {
         min-height: 95px;
     }
 
-    .calc-row {
+    .calculator-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 6px !important;
     }
 
-    .calc-row button {
+    .calculator-grid button {
         min-height: 58px !important;
         height: 58px !important;
-        border-radius: 50% !important;
-        font-size: 23px !important;
-        padding: 0 !important;
+        font-size: 21px !important;
     }
 }
+
+body, p, label, .stMarkdown, .stText, .stCaption,
+.stTextInput label, .stNumberInput label, .stSelectbox label,
+.stRadio label, [data-testid="stWidgetLabel"] {
+    color: white !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: white !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -334,79 +349,37 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)
+st.markdown('<div class="calculator-grid">', unsafe_allow_html=True)
 
-col1, col2, col3, col4 = st.columns(4)
+buttons = [
+    ("7", "seven", "number"),
+    ("8", "eight", "number"),
+    ("9", "nine", "number"),
+    ("÷", "divide", "operator"),
+    ("4", "four", "number"),
+    ("5", "five", "number"),
+    ("6", "six", "number"),
+    ("×", "multiply", "operator"),
+    ("1", "one", "number"),
+    ("2", "two", "number"),
+    ("3", "three", "number"),
+    ("-", "minus", "operator"),
+    ("0", "zero", "number"),
+    ("C", "clear", "clear"),
+    ("=", "equals", "equals"),
+    ("+", "plus", "operator")
+]
 
-with col1:
-    if st.button("7", key="seven", use_container_width=True):
-        press_number(7)
-with col2:
-    if st.button("8", key="eight", use_container_width=True):
-        press_number(8)
-with col3:
-    if st.button("9", key="nine", use_container_width=True):
-        press_number(9)
-with col4:
-    if st.button("÷", key="divide", use_container_width=True):
-        press_operator("÷")
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    if st.button("4", key="four", use_container_width=True):
-        press_number(4)
-with col2:
-    if st.button("5", key="five", use_container_width=True):
-        press_number(5)
-with col3:
-    if st.button("6", key="six", use_container_width=True):
-        press_number(6)
-with col4:
-    if st.button("×", key="multiply", use_container_width=True):
-        press_operator("×")
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    if st.button("1", key="one", use_container_width=True):
-        press_number(1)
-with col2:
-    if st.button("2", key="two", use_container_width=True):
-        press_number(2)
-with col3:
-    if st.button("3", key="three", use_container_width=True):
-        press_number(3)
-with col4:
-    if st.button("-", key="minus", use_container_width=True):
-        press_operator("-")
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('<div class="calc-row">', unsafe_allow_html=True)
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    if st.button("0", key="zero", use_container_width=True):
-        press_number(0)
-with col2:
-    if st.button("C", key="clear", use_container_width=True):
-        press_clear()
-with col3:
-    if st.button("=", key="equals", use_container_width=True):
-        press_equals()
-with col4:
-    if st.button("+", key="plus", use_container_width=True):
-        press_operator("+")
+for label, key, button_type in buttons:
+    if st.button(label, key=key, use_container_width=True):
+        if button_type == "number":
+            press_number(int(label))
+        elif button_type == "operator":
+            press_operator(label)
+        elif button_type == "clear":
+            press_clear()
+        elif button_type == "equals":
+            press_equals()
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -662,3 +635,4 @@ if st.button(
     st.session_state.quiz_started = False
     st.session_state.quiz_submitted = False
     st.rerun()
+
