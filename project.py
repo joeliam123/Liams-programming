@@ -10,14 +10,65 @@ st.markdown("""
 <style>
 .stApp {
     background:
-        radial-gradient(circle at top left, rgba(120, 170, 255, 0.22), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(180, 120, 255, 0.18), transparent 35%),
-        linear-gradient(135deg, #eef4ff, #f8f9ff);
+        radial-gradient(circle at 15% 20%, rgba(255, 0, 128, 0.38), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(0, 200, 255, 0.38), transparent 30%),
+        radial-gradient(circle at 80% 85%, rgba(130, 0, 255, 0.38), transparent 32%),
+        radial-gradient(circle at 15% 85%, rgba(0, 255, 170, 0.28), transparent 30%),
+        linear-gradient(120deg, #12002f, #001b45, #26003d, #003b3b);
+    background-size: 180% 180%;
+    animation: gradientMove 12s ease infinite;
+    min-height: 100vh;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    25% {
+        background-position: 50% 100%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    75% {
+        background-position: 50% 0%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.stApp::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.08) 0 2px, transparent 3px);
+    background-size: 180px 180px, 240px 240px;
+    animation: particles 18s linear infinite;
+    z-index: 0;
+}
+
+@keyframes particles {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-180px);
+    }
 }
 
 .block-container {
     max-width: 900px;
     padding-top: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+h1, h2, h3 {
+    text-shadow: 0 3px 15px rgba(0,0,0,0.25);
 }
 
 .calc-title {
@@ -25,11 +76,14 @@ st.markdown("""
     font-size: 28px;
     font-weight: 700;
     margin: 8px 0 14px 0;
+    color: white;
+    text-shadow: 0 0 18px rgba(0, 220, 255, 0.65);
 }
 
 .calc-display {
-    background: #151515;
+    background: rgba(10, 10, 20, 0.88);
     color: white;
+    border: 1px solid rgba(255,255,255,0.14);
     border-radius: 24px;
     padding: 20px 18px;
     min-height: 105px;
@@ -40,13 +94,15 @@ st.markdown("""
     overflow: hidden;
     margin: 0 auto 14px auto;
     max-width: 430px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.35),
+        0 0 25px rgba(0,200,255,0.15);
 }
 
 .calc-expression {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 18px;
-    color: #a7a7a7;
+    color: #b8c5d9;
     min-height: 25px;
     overflow-wrap: anywhere;
     text-align: right;
@@ -59,6 +115,34 @@ st.markdown("""
     line-height: 1.05;
     overflow-wrap: anywhere;
     text-align: right;
+}
+
+.calc-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+.calc-row > div {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: 25% !important;
+}
+
+.calc-row button {
+    width: 100% !important;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        filter 0.15s ease !important;
+}
+
+.calc-row button:hover {
+    transform: translateY(-3px) scale(1.04);
+    filter: brightness(1.18);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
 }
 
 @media (max-width: 600px) {
@@ -77,11 +161,11 @@ st.markdown("""
         min-height: 95px;
     }
 
-    div[data-testid="column"] {
-        padding: 3px !important;
+    .calc-row {
+        gap: 6px !important;
     }
 
-    div[data-testid="column"] button {
+    .calc-row button {
         min-height: 58px !important;
         height: 58px !important;
         border-radius: 50% !important;
@@ -250,7 +334,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-col1, col2, col3, col4 = st.columns(4)
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("7", key="seven", use_container_width=True):
@@ -265,7 +349,9 @@ with col4:
     if st.button("÷", key="divide", use_container_width=True):
         press_operator("÷")
 
-col1, col2, col3, col4 = st.columns(4)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("4", key="four", use_container_width=True):
@@ -280,7 +366,9 @@ with col4:
     if st.button("×", key="multiply", use_container_width=True):
         press_operator("×")
 
-col1, col2, col3, col4 = st.columns(4)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("1", key="one", use_container_width=True):
@@ -295,7 +383,9 @@ with col4:
     if st.button("-", key="minus", use_container_width=True):
         press_operator("-")
 
-col1, col2, col3, col4 = st.columns(4)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="calc-row">', unsafe_allow_html=True)\n\ncol1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("0", key="zero", use_container_width=True):
@@ -309,6 +399,8 @@ with col3:
 with col4:
     if st.button("+", key="plus", use_container_width=True):
         press_operator("+")
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 st.divider()
 
