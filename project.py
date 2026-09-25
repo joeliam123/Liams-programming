@@ -11,6 +11,42 @@ st.set_page_config(
 )
 
 
+st.markdown("""
+<style>
+.stApp {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(120, 170, 255, 0.28), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(190, 130, 255, 0.24), transparent 30%),
+        radial-gradient(circle at 70% 85%, rgba(80, 200, 180, 0.20), transparent 30%),
+        linear-gradient(135deg, #eef4ff 0%, #f7f1ff 50%, #eefcf9 100%);
+}
+
+.block-container {
+    background: rgba(255, 255, 255, 0.78);
+    padding: 2rem 2rem 3rem 2rem;
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(50, 60, 100, 0.12);
+}
+
+h1, h2, h3 {
+    color: #24304a;
+}
+
+div.stButton > button {
+    border-radius: 12px;
+    border: 1px solid rgba(80, 100, 150, 0.15);
+    transition: all 0.2s ease;
+}
+
+div.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(50, 70, 120, 0.15);
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # ==========================================
 # PROFILE
 # ==========================================
@@ -73,11 +109,6 @@ st.divider()
 
 st.header("🧮 Calculator")
 
-
-# ==========================================
-# CALCULATOR STATE
-# ==========================================
-
 if "display" not in st.session_state:
     st.session_state.display = "0"
 
@@ -90,49 +121,71 @@ if "operator" not in st.session_state:
 if "new_number" not in st.session_state:
     st.session_state.new_number = True
 
+if "expression" not in st.session_state:
+    st.session_state.expression = "0"
 
-# ==========================================
-# CALCULATOR FUNCTIONS
-# ==========================================
 
 def press_number(number):
-
     if st.session_state.display == "Error":
         st.session_state.display = "0"
+        st.session_state.expression = "0"
 
     if st.session_state.new_number:
-
         st.session_state.display = str(number)
+
+        if st.session_state.first_number is not None and st.session_state.operator is not None:
+            st.session_state.expression = (
+                f"{format_number(st.session_state.first_number)} "
+                f"{st.session_state.operator} {number}"
+            )
+        else:
+            st.session_state.expression = str(number)
+
         st.session_state.new_number = False
-
     else:
-
         if st.session_state.display == "0":
             st.session_state.display = str(number)
-
         else:
             st.session_state.display += str(number)
+
+        if st.session_state.first_number is not None and st.session_state.operator is not None:
+            st.session_state.expression = (
+                f"{format_number(st.session_state.first_number)} "
+                f"{st.session_state.operator} {st.session_state.display}"
+            )
+        else:
+            st.session_state.expression = st.session_state.display
 
     st.rerun()
 
 
-def press_operator(operator):
+def format_number(number):
+    if number == int(number):
+        return str(int(number))
+    return str(round(number, 10))
 
+
+def press_operator(operator):
     if st.session_state.display == "Error":
         return
 
-    st.session_state.first_number = float(
-        st.session_state.display
-    )
+    if st.session_state.first_number is not None and st.session_state.operator is not None:
+        press_equals()
+        st.session_state.first_number = float(st.session_state.display)
+
+    else:
+        st.session_state.first_number = float(st.session_state.display)
 
     st.session_state.operator = operator
+    st.session_state.expression = (
+        f"{format_number(st.session_state.first_number)} {operator}"
+    )
     st.session_state.new_number = True
 
     st.rerun()
 
 
 def press_equals():
-
     if (
         st.session_state.first_number is None
         or st.session_state.operator is None
@@ -153,14 +206,12 @@ def press_equals():
         result = first * second
 
     elif operator == "÷":
-
         if second == 0:
-
             st.session_state.display = "Error"
+            st.session_state.expression = "Error"
             st.session_state.first_number = None
             st.session_state.operator = None
             st.session_state.new_number = True
-
             st.rerun()
             return
 
@@ -170,11 +221,12 @@ def press_equals():
         return
 
     if result == int(result):
-        st.session_state.display = str(int(result))
-
+        result_text = str(int(result))
     else:
-        st.session_state.display = str(round(result, 10))
+        result_text = str(round(result, 10))
 
+    st.session_state.display = result_text
+    st.session_state.expression = result_text
     st.session_state.first_number = None
     st.session_state.operator = None
     st.session_state.new_number = True
@@ -183,8 +235,8 @@ def press_equals():
 
 
 def press_clear():
-
     st.session_state.display = "0"
+    st.session_state.expression = "0"
     st.session_state.first_number = None
     st.session_state.operator = None
     st.session_state.new_number = True
@@ -208,8 +260,9 @@ st.markdown(
         font-family: monospace;
         margin-bottom: 15px;
         min-height: 50px;
+        overflow-wrap: anywhere;
     ">
-        {st.session_state.display}
+        {st.session_state.expression}
     </div>
     """,
     unsafe_allow_html=True
@@ -306,8 +359,6 @@ with col3:
 with col4:
     if st.button("+", key="plus", use_container_width=True):
         press_operator("+")
-
-
 
 # ==========================================
 # GRADE CALCULATOR
@@ -683,4 +734,3 @@ if st.button(
     st.session_state.quiz_started = False
     st.session_state.quiz_submitted = False
     st.rerun()
-
