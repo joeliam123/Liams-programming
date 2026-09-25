@@ -214,64 +214,38 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.calc-button-wrap button {
-    min-height: 58px !important;
-    height: 58px !important;
-    border-radius: 50% !important;
-    font-size: 22px !important;
-    font-weight: 700 !important;
-    background: rgba(35, 35, 50, 0.95) !important;
+
+[data-testid="stButton"] > button {
+    background: #202030 !important;
+    background-color: #202030 !important;
     border: 1px solid rgba(255,255,255,0.35) !important;
     color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-.calc-button-wrap button div {
-    color: #ffffff !important;
-}
-
-.calc-button-wrap button p {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
+    border-radius: 50% !important;
+    min-height: 58px !important;
+    height: 58px !important;
     font-size: 22px !important;
     font-weight: 700 !important;
+    opacity: 1 !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stButton"] > button *,
+[data-testid="stButton"] > button p,
+[data-testid="stButton"] > button div,
+[data-testid="stButton"] > button span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
     opacity: 1 !important;
     visibility: visible !important;
 }
 
 @media (max-width: 640px) {
-    .calc-button-wrap button {
+    [data-testid="stButton"] > button {
         min-height: 52px !important;
         height: 52px !important;
         font-size: 19px !important;
     }
-
-    .calc-button-wrap button p {
-        font-size: 19px !important;
-    }
 }
-.calc-button-wrap button {
-        min-height: 52px !important;
-        height: 52px !important;
-        font-size: 19px !important;
-    }
-
-    .calc-button-wrap button p {
-        font-size: 19px !important;
-    }
-}
-
-
-.calc-button-wrap [data-testid="stButton"] button,
-.calc-button-wrap [data-testid="stButton"] button *,
-.calc-button-wrap [data-testid="stButton"] button p,
-.calc-button-wrap [data-testid="stButton"] button div {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -726,4 +700,3 @@ if st.button(
     st.session_state.quiz_started = False
     st.session_state.quiz_submitted = False
     st.rerun()
-
