@@ -1,4 +1,6 @@
+
 import streamlit as st
+import random
 
 st.set_page_config(
     page_title="My Profile & Calculator",
@@ -21,21 +23,11 @@ st.markdown("""
 }
 
 @keyframes gradientMove {
-    0% {
-        background-position: 0% 50%;
-    }
-    25% {
-        background-position: 50% 100%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    75% {
-        background-position: 50% 0%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    25% { background-position: 50% 100%; }
+    50% { background-position: 100% 50%; }
+    75% { background-position: 50% 0%; }
+    100% { background-position: 0% 50%; }
 }
 
 .stApp::before {
@@ -52,12 +44,8 @@ st.markdown("""
 }
 
 @keyframes particles {
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(-180px);
-    }
+    from { transform: translateY(0); }
+    to { transform: translateY(-180px); }
 }
 
 .block-container {
@@ -188,16 +176,6 @@ h1, h2, h3, h4, h5, h6 {
     color: white !important;
 }
 
-
-body, p, label, .stMarkdown, .stText, .stCaption,
-[data-testid="stWidgetLabel"] {
-    color: white !important;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    color: white !important;
-}
-
 [data-testid="stButton"] button,
 [data-testid="stButton"] button p {
     color: white !important;
@@ -212,8 +190,6 @@ h1, h2, h3, h4, h5, h6 {
     min-width: 0 !important;
     flex: 1 1 0 !important;
 }
-
-
 
 [data-testid="stButton"] > button {
     background: #202030 !important;
@@ -304,6 +280,15 @@ if "operator" not in st.session_state:
 if "new_number" not in st.session_state:
     st.session_state.new_number = True
 
+
+def format_number(number):
+    if number is None:
+        return ""
+    if float(number).is_integer():
+        return str(int(number))
+    return str(round(number, 10))
+
+
 def press_number(number):
     if st.session_state.display == "Error":
         st.session_state.display = "0"
@@ -329,12 +314,6 @@ def press_number(number):
 
     st.rerun()
 
-def format_number(number):
-    if number is None:
-        return ""
-    if float(number).is_integer():
-        return str(int(number))
-    return str(round(number, 10))
 
 def press_operator(operator):
     if st.session_state.display == "Error":
@@ -347,6 +326,7 @@ def press_operator(operator):
     )
     st.session_state.new_number = True
     st.rerun()
+
 
 def press_equals():
     if (
@@ -389,6 +369,7 @@ def press_equals():
     st.session_state.new_number = True
     st.rerun()
 
+
 def press_clear():
     st.session_state.display = "0"
     st.session_state.expression = ""
@@ -396,6 +377,7 @@ def press_clear():
     st.session_state.operator = None
     st.session_state.new_number = True
     st.rerun()
+
 
 st.markdown(
     f"""
@@ -407,12 +389,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 def calc_button(label, key, action, column):
     with column:
-        st.markdown('<div class="calc-button-wrap">', unsafe_allow_html=True)
         if st.button(label, key=key, use_container_width=True):
             action()
-        st.markdown('</div>', unsafe_allow_html=True)
 
 
 calculator_rows = [
@@ -452,21 +433,47 @@ st.divider()
 
 st.header("📊 Grade Calculator")
 
-subject_count = st.number_input("📚 How many subjects?", min_value=1, max_value=20, value=3, step=1, key="subject_count")
+subject_count = st.number_input(
+    "📚 How many subjects?",
+    min_value=1,
+    max_value=20,
+    value=3,
+    step=1,
+    key="subject_count"
+)
+
 st.write(f"Enter your grades for {subject_count} subject(s):")
 
 subjects = []
+
 for i in range(int(subject_count)):
     col1, col2 = st.columns([2, 1])
+
     with col1:
-        subject_name = st.text_input(f"Subject {i + 1}", value=f"Subject {i + 1}", key=f"grade_subject_{i}")
+        subject_name = st.text_input(
+            f"Subject {i + 1}",
+            value=f"Subject {i + 1}",
+            key=f"grade_subject_{i}"
+        )
+
     with col2:
-        grade = st.number_input(f"Grade {i + 1}", min_value=0, max_value=100, value=0, step=1, key=f"grade_value_{i}")
+        grade = st.number_input(
+            f"Grade {i + 1}",
+            min_value=0,
+            max_value=100,
+            value=0,
+            step=1,
+            key=f"grade_value_{i}"
+        )
+
     subjects.append((subject_name, grade))
 
+
 if st.button("🧮 Calculate Grades", key="calculate_grades"):
+
     grades = [grade for _, grade in subjects]
     average = sum(grades) / len(grades)
+
     if average >= 90:
         letter, gpa, remark = "A", 4.0, "Excellent! Keep up the great work! 🌟"
     elif average >= 80:
@@ -477,19 +484,29 @@ if st.button("🧮 Calculate Grades", key="calculate_grades"):
         letter, gpa, remark = "D", 1.0, "You passed, but keep working harder. 💪"
     else:
         letter, gpa, remark = "F", 0.0, "Keep practicing and don't give up! 🔥"
+
     st.success("Grades calculated successfully!")
     st.metric("Average", f"{average:.2f}%")
     st.metric("Letter Grade", letter)
     st.metric("GPA", f"{gpa:.1f}")
     st.info(f"💬 Remark: {remark}")
+
     st.subheader("📋 Subject Results")
+
     for subject_name, grade in subjects:
-        if grade >= 90: subject_letter = "A"
-        elif grade >= 80: subject_letter = "B"
-        elif grade >= 70: subject_letter = "C"
-        elif grade >= 60: subject_letter = "D"
-        else: subject_letter = "F"
+        if grade >= 90:
+            subject_letter = "A"
+        elif grade >= 80:
+            subject_letter = "B"
+        elif grade >= 70:
+            subject_letter = "C"
+        elif grade >= 60:
+            subject_letter = "D"
+        else:
+            subject_letter = "F"
+
         st.write(f"**{subject_name}** — {grade:.0f}% ({subject_letter})")
+
 
 st.header("🧠 Quiz Master")
 
@@ -502,6 +519,7 @@ if "quiz_started" not in st.session_state:
 if "quiz_submitted" not in st.session_state:
     st.session_state.quiz_submitted = False
 
+
 number_of_questions = st.number_input(
     "How many questions do you want?",
     min_value=1,
@@ -511,7 +529,9 @@ number_of_questions = st.number_input(
     key="quiz_number"
 )
 
+
 if st.button("📝 Create Quiz", key="create_quiz"):
+
     st.session_state.quiz_questions = []
 
     for i in range(int(number_of_questions)):
@@ -525,10 +545,13 @@ if st.button("📝 Create Quiz", key="create_quiz"):
     st.session_state.quiz_submitted = False
     st.rerun()
 
+
 if st.session_state.quiz_questions and not st.session_state.quiz_started:
+
     st.subheader("✏️ Create Your Questions")
 
     for i in range(len(st.session_state.quiz_questions)):
+
         st.markdown(f"### Question {i + 1}")
 
         st.session_state.quiz_questions[i]["question"] = st.text_input(
@@ -556,6 +579,7 @@ if st.session_state.quiz_questions and not st.session_state.quiz_started:
         key="start_quiz",
         use_container_width=True
     ):
+
         valid = True
 
         for q in st.session_state.quiz_questions:
@@ -575,12 +599,15 @@ if st.session_state.quiz_questions and not st.session_state.quiz_started:
                 "⚠️ Please fill in every question and all four answer choices!"
             )
 
+
 if st.session_state.quiz_questions and st.session_state.quiz_started:
+
     st.subheader("🎯 Take the Quiz")
 
     answers = []
 
     for i, q in enumerate(st.session_state.quiz_questions):
+
         st.markdown(f"### Question {i + 1}")
         st.write(q["question"])
 
@@ -597,6 +624,7 @@ if st.session_state.quiz_questions and st.session_state.quiz_started:
         key="submit_quiz",
         use_container_width=True
     ):
+
         score = 0
 
         for i, q in enumerate(st.session_state.quiz_questions):
@@ -609,6 +637,7 @@ if st.session_state.quiz_questions and st.session_state.quiz_started:
         st.session_state.quiz_submitted = True
 
     if st.session_state.quiz_submitted:
+
         total = len(st.session_state.quiz_questions)
 
         st.success(
@@ -619,10 +648,7 @@ if st.session_state.quiz_questions and st.session_state.quiz_started:
             st.session_state.quiz_score / total
         ) * 100
 
-        st.metric(
-            "Percentage",
-            f"{percentage:.1f}%"
-        )
+        st.metric("Percentage", f"{percentage:.1f}%")
 
         if percentage == 100:
             st.balloons()
@@ -634,6 +660,7 @@ if st.session_state.quiz_questions and st.session_state.quiz_started:
         else:
             st.warning("📚 Keep studying and try again!")
 
+
 if st.button(
     "🔄 Create New Quiz",
     key="new_quiz",
@@ -643,3 +670,161 @@ if st.button(
     st.session_state.quiz_started = False
     st.session_state.quiz_submitted = False
     st.rerun()
+
+
+st.divider()
+
+st.header("🎮 Number Guessing Game")
+
+st.write(
+    "Choose your difficulty and try to guess the number "
+    "the computer has randomly selected!"
+)
+
+if "secret_number" not in st.session_state:
+    st.session_state.secret_number = None
+
+if "guess_attempts" not in st.session_state:
+    st.session_state.guess_attempts = 0
+
+if "game_over" not in st.session_state:
+    st.session_state.game_over = False
+
+if "game_started" not in st.session_state:
+    st.session_state.game_started = False
+
+if "game_won" not in st.session_state:
+    st.session_state.game_won = False
+
+if "game_feedback" not in st.session_state:
+    st.session_state.game_feedback = ""
+
+
+levels = {
+    "Level 1 - Easy (1-10)": 10,
+    "Level 2 - Normal (1-50)": 50,
+    "Level 3 - Hard (1-100)": 100,
+    "Level 4 - Extreme (1-500)": 500
+}
+
+difficulty = st.selectbox(
+    "🏆 Choose Difficulty",
+    list(levels.keys()),
+    key="guess_difficulty"
+)
+
+selected_max = levels[difficulty]
+
+max_attempts = st.number_input(
+    "🎯 How many guesses do you want?",
+    min_value=1,
+    max_value=100,
+    value=5,
+    step=1,
+    key="max_guess_attempts"
+)
+
+
+if st.button("🚀 Start Game", use_container_width=True):
+
+    st.session_state.secret_number = random.randint(1, selected_max)
+    st.session_state.game_max_number = selected_max
+    st.session_state.game_max_attempts = int(max_attempts)
+    st.session_state.guess_attempts = 0
+    st.session_state.game_over = False
+    st.session_state.game_started = True
+    st.session_state.game_won = False
+    st.session_state.game_feedback = ""
+
+    st.rerun()
+
+
+if st.session_state.game_started and not st.session_state.game_over:
+
+    game_max = st.session_state.game_max_number
+    game_limit = st.session_state.game_max_attempts
+
+    st.info(f"Guess a number between 1 and {game_max}!")
+
+    remaining = game_limit - st.session_state.guess_attempts
+
+    st.write(f"❤️ Attempts remaining: {remaining}")
+    st.progress(remaining / game_limit)
+
+    guess = st.number_input(
+        "Enter your guess",
+        min_value=1,
+        max_value=game_max,
+        step=1,
+        key=f"current_guess_{game_max}"
+    )
+
+    if st.button("🔍 Check Guess", use_container_width=True):
+
+        st.session_state.guess_attempts += 1
+
+        if guess < st.session_state.secret_number:
+
+            st.session_state.game_feedback = (
+                "📈 Too low! Guess a higher number."
+            )
+
+        elif guess > st.session_state.secret_number:
+
+            st.session_state.game_feedback = (
+                "📉 Too high! Guess a lower number."
+            )
+
+        else:
+
+            st.session_state.game_over = True
+            st.session_state.game_won = True
+            st.session_state.game_feedback = (
+                "🎉 Congratulations! You guessed correctly!"
+            )
+
+        if (
+            not st.session_state.game_over
+            and st.session_state.guess_attempts >= game_limit
+        ):
+
+            st.session_state.game_over = True
+            st.session_state.game_won = False
+            st.session_state.game_feedback = (
+                "❌ Game Over! You ran out of guesses."
+            )
+
+        st.rerun()
+
+    if st.session_state.game_feedback:
+        st.info(st.session_state.game_feedback)
+
+
+if st.session_state.game_over:
+
+    if st.session_state.game_won:
+        st.success(st.session_state.game_feedback)
+        st.balloons()
+    else:
+        st.error(st.session_state.game_feedback)
+
+    st.write(
+        f"🔢 The secret number was: "
+        f"**{st.session_state.secret_number}**"
+    )
+
+    st.write(
+        f"🎯 Total guesses: "
+        f"{st.session_state.guess_attempts}"
+    )
+
+    if st.button("🔄 Play Again", use_container_width=True):
+
+        st.session_state.game_started = False
+        st.session_state.game_over = False
+        st.session_state.secret_number = None
+        st.session_state.guess_attempts = 0
+        st.session_state.game_won = False
+        st.session_state.game_feedback = ""
+
+        st.rerun()
